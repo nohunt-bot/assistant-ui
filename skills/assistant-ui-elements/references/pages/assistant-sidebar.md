@@ -1,0 +1,82 @@
+# Assistant sidebar
+URL: /elements/assistant-sidebar
+
+A resizable side panel for copilot experiences and contextual assistance.
+
+> For AI agents: a documentation index is available at [llms.txt](/llms.txt). Use `.md` for canonical markdown pages; `.mdx` is kept as a backwards-compatible alias on supported URL paths.
+
+Assistant sidebar splits the screen between your app and a Thread, with a drag handle between them. It has no standalone form, since the only state it holds is the resizable split itself, and the conversation pane is always a live Thread.
+
+## Getting started
+
+**With a runtime:**
+
+`AssistantSidebar` needs nothing beyond a runtime provider higher up the tree and the content to show in the left pane.
+
+1. ### Wrap your app
+
+   ```
+   import { AssistantSidebar } from "@/components/assistant-ui/elements/assistant-sidebar.aui";
+
+   export default function Layout({ children }: { children: React.ReactNode }) {
+     return <AssistantSidebar>{children}</AssistantSidebar>;
+   }
+   ```
+
+   Needs an `AssistantRuntimeProvider` ancestor. `children` renders in the left pane; a full [Thread](/elements/thread) fills the right one.
+
+**Standalone (no runtime):**
+
+Assistant sidebar has no standalone form: its only prop is `children`, and the conversation pane is always the runtime-only Thread. For a resizable split with a static or otherwise non-runtime right pane, compose `ResizablePanelGroup` directly around your own content.
+
+## Anatomy
+
+```
+<ResizablePanelGroup orientation="horizontal">
+  <ResizablePanel>{children}</ResizablePanel>
+  <ResizableHandle />
+  <ResizablePanel>
+    <Thread />
+  </ResizablePanel>
+</ResizablePanelGroup>
+```
+
+Neither panel sets a `defaultSize` or `minSize`, so the group starts at an even split and either side can be dragged arbitrarily close to zero.
+
+## Examples
+
+### Constrain the split
+
+Sizes given as numbers are pixels; use a string such as `"70%"` for a share of the group.
+
+```
+<ResizablePanelGroup orientation="horizontal">
+  <ResizablePanel defaultSize="70%" minSize="30%">
+    {children}
+  </ResizablePanel>
+  <ResizableHandle />
+  <ResizablePanel defaultSize="30%" minSize="20%">
+    <Thread />
+  </ResizablePanel>
+</ResizablePanelGroup>
+```
+
+### Show a grip on the handle
+
+```
+<ResizableHandle withHandle />
+```
+
+## API reference
+
+**With a runtime:**
+
+### AssistantSidebarProps
+
+| Prop       | Type        | Default  | Description                |
+| ---------- | ----------- | -------- | -------------------------- |
+| `children` | `ReactNode` | required | Rendered in the left pane. |
+
+### Panels
+
+`ResizablePanelGroup`, `ResizablePanel`, and `ResizableHandle` come from `@/components/ui/resizable`, a thin wrapper over `react-resizable-panels`; every prop of the underlying library, including `defaultSize`, `minSize`, `maxSize`, and `collapsible`, passes straight through.

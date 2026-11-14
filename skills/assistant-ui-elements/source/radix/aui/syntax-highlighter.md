@@ -1,0 +1,56 @@
+# Syntax Highlighter（`aui/syntax-highlighter`，radix）
+
+Code block highlighting powered by react-syntax-highlighter.
+
+- 直接依賴：無
+- 完整安裝順序（依賴在前，含本項）：`ui/utils`, `aui/syntax-highlighter`
+- npm（整組）：`npm install cn @assistant-ui/react-syntax-highlighter@^0.14.7 @assistant-ui/react-markdown@^0.14.26 react-syntax-highlighter @types/react-syntax-highlighter`
+
+## 檔案：`components/assistant-ui/elements/syntax-highlighter.tsx`
+
+```tsx
+import { PrismAsyncLight } from "react-syntax-highlighter";
+import { makePrismAsyncLightSyntaxHighlighter } from "@assistant-ui/react-syntax-highlighter";
+import type { SyntaxHighlighterProps } from "@assistant-ui/react-markdown";
+
+import tsx from "react-syntax-highlighter/dist/esm/languages/prism/tsx";
+import python from "react-syntax-highlighter/dist/esm/languages/prism/python";
+
+import {
+  coldarkCold,
+  coldarkDark,
+} from "react-syntax-highlighter/dist/cjs/styles/prism";
+
+PrismAsyncLight.registerLanguage("js", tsx);
+PrismAsyncLight.registerLanguage("jsx", tsx);
+PrismAsyncLight.registerLanguage("ts", tsx);
+PrismAsyncLight.registerLanguage("tsx", tsx);
+PrismAsyncLight.registerLanguage("python", python);
+
+const syntaxHighlighterCustomStyle = {
+  // Unset so the markdown Pre's theme surface shows instead of the Prism theme's own background.
+  background: undefined,
+  margin: 0,
+  width: "100%",
+  padding: "1.5rem 1rem",
+};
+
+const LightSyntaxHighlighter = makePrismAsyncLightSyntaxHighlighter({
+  style: coldarkCold,
+  customStyle: syntaxHighlighterCustomStyle,
+  className: "dark:hidden",
+});
+
+const DarkSyntaxHighlighter = makePrismAsyncLightSyntaxHighlighter({
+  style: coldarkDark,
+  customStyle: syntaxHighlighterCustomStyle,
+  className: "hidden dark:block",
+});
+
+export const SyntaxHighlighter = (props: SyntaxHighlighterProps) => (
+  <>
+    <LightSyntaxHighlighter {...props} />
+    <DarkSyntaxHighlighter {...props} />
+  </>
+);
+```

@@ -1,0 +1,19 @@
+# Suggestion Adapters
+URL: /docs/api-reference/adapters/suggestions
+
+Suggestion adapters for providing starter prompts, contextual actions, and guided composer options to assistant-ui runtimes.
+
+> For AI agents: a documentation index is available at [llms.txt](/llms.txt). Use `.md` for canonical markdown pages; `.mdx` is kept as a backwards-compatible alias on supported URL paths.
+
+## API Reference
+
+### createSuggestionAdapter
+
+```
+const createSuggestionAdapter: (options: CreateSuggestionAdapterOptions) => SuggestionAdapter;
+```
+
+### SuggestionAdapter
+
+- `key?`: `string | number | symbol | undefined` — Changes when the adapter should regenerate suggestions for a settled run.
+- `generate`: `( options: SuggestionAdapterGenerateOptions, ) => | Promise<readonly ThreadSuggestion[]> | AsyncGenerator<readonly ThreadSuggestion[], void>`

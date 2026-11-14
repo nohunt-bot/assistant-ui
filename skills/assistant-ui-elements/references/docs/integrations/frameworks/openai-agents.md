@@ -1,0 +1,29 @@
+# OpenAI Agents SDK
+URL: /docs/integrations/frameworks/openai-agents
+
+Connect the OpenAI Agents SDK to assistant-ui through the AI SDK runtime.
+
+> For AI agents: a documentation index is available at [llms.txt](/llms.txt). Use `.md` for canonical markdown pages; `.mdx` is kept as a backwards-compatible alias on supported URL paths.
+
+The [OpenAI Agents SDK](https://developers.openai.com/api/docs/guides/agents/sdk) runs agents, tools, and handoffs in your application. Connect its TypeScript SDK to assistant-ui through the existing [AI SDK runtime](/docs/runtimes/ai-sdk/overview).
+
+## Connect the agent to your chat UI
+
+Use `@openai/agents` and `@openai/agents-extensions` on the server, and `@assistant-ui/ai-sdk` in the React frontend. OpenAI's `@openai/agents-extensions/ai-sdk-ui` entry point converts a streamed agent run into the UI message stream consumed by the frontend.
+
+1. Follow the [AI SDK v7 setup](/docs/runtimes/ai-sdk/v7) to install assistant-ui and render your thread with `useChatRuntime`.
+2. In your chat route, convert incoming UI messages into Agents SDK input and start the agent with `run(agent, input, { stream: true })`.
+3. Return the run with `createAiSdkUiMessageStreamResponse` from `@openai/agents-extensions/ai-sdk-ui`. Point your chat transport at that route.
+
+OpenAI's [AI SDK integration documentation](https://openai.github.io/openai-agents-js/extensions/ai-sdk/) describes the response helpers. Its [AI SDK UI example](https://github.com/openai/openai-agents-js/tree/main/examples/ai-sdk-ui) includes a chat route, input conversion, and session handling.
+
+## Keep session and tool handling on the server
+
+The stream helper converts the agent's output. Your route still owns authentication, conversation history, input conversion, and cancellation. When the Agents SDK session stores history, send the new turn instead of appending the entire transcript again.
+
+Frontend tool execution and approval responses also need route handlers that resume the appropriate agent run. `AssistantChatTransport` can forward frontend tool definitions and system messages, but your backend must explicitly connect them to the Agents SDK. Returning a UI message stream alone does not make that connection.
+
+## Continue with the runtime setup
+
+- [AI SDK runtime](/docs/runtimes/ai-sdk/overview) — Configure useChatRuntime, custom transports, and the assistant-ui provider.
+- [OpenAI Agents SDK](https://developers.openai.com/api/docs/guides/agents/sdk) — Configure agents, tools, handoffs, and session state in your backend.
